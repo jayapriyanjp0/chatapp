@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+    <style>
+        .message-wrapper { margin: 5px 0; }
+        .message { padding: 8px; border-radius: 6px; display: inline-block; }
+        .client-message { background: #cef; float: right; }
+        .server-message { background: #fec; float: left; }
+    </style>
+</head>
+<body>
+
+<h1>WebSocket Connection</h1>
+
+<div id="message" style="height: 200px; overflow-y: auto; border: 1px solid #aaa; padding: 10px;"></div>
+
+<input type="text" id="messageInput" placeholder="enter the value" />
+<button onclick="sendMessage()">Send Message</button>
+
+<script>
+let socket = new WebSocket("ws://localhost:8080");
+
+socket.onopen = function () {
+    displayMessage("Connected to server", "server");
+};
+
+socket.onmessage = function (e) {
+    displayMessage(e.data, "server");
+};
+
+function displayMessage(message, sender) {
+    const messageContainer = document.getElementById("message");
+
+    const messageElement = document.createElement("div");
+    messageElement.classList.add("message");
+    messageElement.classList.add(
+        sender === "client" ? "client-message" : "server-message"
+    );
+    messageElement.textContent = message;
+
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("message-wrapper");
+    wrapper.appendChild(messageElement);
+
+    messageContainer.appendChild(wrapper);
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+}
+
+function sendMessage() {
+    let msg = document.getElementById("messageInput").value;
+
+    if (msg.trim() !== "") {
+        socket.send(msg);
+        displayMessage(msg, "client");
+        document.getElementById("messageInput").value = "";
+    }
+}
+</script>
+
+</body>
+</html>
