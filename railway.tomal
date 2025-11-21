@@ -1,0 +1,12 @@
+[build]
+builder = "NIXPACKS"
+
+[start]
+cmd = "python3 server.py"
+
+[deploy]
+numReplicas = 1
+
+[network]
+port = 8080
+protocol = "tcp"
