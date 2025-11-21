@@ -1,2 +1,1 @@
-pip install asyncio
-pip install websocket
+websocket
